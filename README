@@ -1,0 +1,12 @@
+PHP AppInstall
+===================
+
+A script to simplify the process of installing PHP web applications.
+
+NOTE: The application is designed for personal use in mind, not a 
+muli-user enviroment. The app currently has no form of authentication, 
+and security is not extremely rigid. If you want such functionality, 
+contact me or fork the app. 
+
+TODO:
+> Add capabilities to change where the app is to be installed (file browser, etc.)
