@@ -13,7 +13,17 @@ class file_manager
 				mkdir($install_location);
 				return $install_location;
 			}
-			
+		
+		public function is_accessible($folder)
+			{
+				if (is_writable($folder)&&is_readable($folder))
+					{
+						return true;
+					}else{
+						return false;
+					}
+			}
+
 		public function instance_exists($name)
 			{
 				if (!file_exists(INSTALL_FOLDER . "/" . $name))
@@ -57,17 +67,34 @@ class file_manager
 			
 		private function untar($file)
 			{
+				$destination = './' . str_replace('.tar',"", $file);
 				try
 					{
 						$phar = new PharData($file);
-						$destination = './' . str_replace('.tar',"", $file);
+						
 						$phar->extractTo($destination);
 						
 						return $destination;
 					}
 					catch (Exception $e)
 					{
-						echo "ERROR: Improper Previous Removal!";
+						if (strpos($e->getMessage(), 'corrupted tar') !== FALSE)  
+							{
+								
+								$just_folder_array = explode("/",$destination);
+								$just_folder = $just_folder_array[count($just_folder_array)-1];
+								
+								mkdir('./temp/' . $just_folder);
+								 
+								exec('tar xvf ' . $file . " -C ./temp/" . $just_folder);
+								
+								return $destination;
+							}else{
+								echo "ERROR: " . $e->getMessage();
+							}
+						
+					
+						//
 					}
 
 
@@ -76,8 +103,10 @@ class file_manager
 		public function move_temp($temp,$install_location)
 			{
 				$dir_contents = scandir($temp);
-				if (count($dir_contents)==3)
+				if (count($dir_contents)==2)
 					{
+						return false;
+					}else if (count($dir_contents)==3){
 						$this->xmove($temp . "/" . $dir_contents[2],$install_location);
 					}else{
 						$this->xmove($temp,$install_location);
@@ -85,6 +114,7 @@ class file_manager
 				
 				
 				$this->remove_dir($temp);
+				return true;
 			}
 
 			
@@ -139,13 +169,7 @@ class file_manager
 			
 		public function is_temp_directory()
 			{
-				// Make sure the temp directory exists
-				if (!file_exists('./temp'))
-					{
-						return false;
-					}else{
-						return true;
-					}
+				return $this->folder_exists('./temp');
 			}
 			
 		public function make_temp_directory()
@@ -157,6 +181,17 @@ class file_manager
 						
 					}else{
 						
+					}
+			}
+			
+		public function folder_exists($folder)
+			{
+					// Make sure the temp directory exists
+				if (!file_exists($folder))
+					{
+						return false;
+					}else{
+						return true;
 					}
 			}
 	}

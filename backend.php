@@ -1,5 +1,6 @@
 <?php
 // Included the needed files
+
 include('./config.php');
 include('./lib/download_manager.php');
 include('./lib/file_manager.php');
@@ -22,22 +23,21 @@ if (array_key_exists('command',$_POST)	)
 				$_SESSION['name'] = '';
 				$_SESSION['location'] = '';
 				$_SESSION['install_location'] = '';
+								
 				
+				$check = new file_manager();
 				
-				// Setup, here we need to clear out the temp directory, or make it
-				
-				$setup = new file_manager();
-				
-				// Check if there is a temp directory
-				if ($setup->is_temp_directory())
-					{
-						// If there is, clear it
-						$setup->clear_temp_directory();
-					}else{
+				// Setup, here we need to clear out the temp directory
+				if ($check->is_temp_directory())
+					{	 
+						// If the temp direcotry exists, clear it
+						$check->clear_temp_directory();
 						
-						// If there is not, make it
-						$setup->make_temp_directory();
+					}else{
+						// If not make it
+						$check->make_temp_directory();
 					}
+				
 				
 				if (!array_key_exists('name',$_POST)||!array_key_exists('download',$_POST)|| trim($_POST['name'])==''|| trim($_POST['download'])=='')
 					{
@@ -47,7 +47,7 @@ if (array_key_exists('command',$_POST)	)
 						$_SESSION['name'] = $_POST['name'];
 						
 						// Check if the instance already exists
-						$check = new file_manager();
+						
 						if ($check->instance_exists($_SESSION['name']))
 							{
 								echo "ERROR: Instance already exists";
@@ -65,6 +65,11 @@ if (array_key_exists('command',$_POST)	)
 						 
 						// Download file, get location to where the file was downloaded and put it in 
 						$_SESSION['location'] = $downloader->download($_SESSION['download']);
+						
+						if ($_SESSION['location']==false)
+							{
+								echo "ERROR: URL rejected";
+							}
 						
 					}else{
 						echo "ERROR: No file given";
@@ -89,7 +94,11 @@ if (array_key_exists('command',$_POST)	)
 						if ($_SESSION['location']!='')
 							{
 								$_SESSION['install_location'] = $mover->create_install_folder($_SESSION['name']);
-								$mover->move_temp($_SESSION['location'],$_SESSION['install_location']);
+								$result = $mover->move_temp($_SESSION['location'],$_SESSION['install_location']);
+								if ($result==false)
+									{
+										echo "ERROR: Folder Empty for some reason!";
+									}
 								
 							}
 					}else{

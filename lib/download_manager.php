@@ -31,14 +31,21 @@ class download_manager
 			
 		private function valid_link($link)
 			{
-				// Make sure it has http:// in beginning
+				// Make sure it has http:// or https:// in beginning
 				$prefix = substr($link,0,7);
 				
-				if ($prefix!='http://')
+				if ($prefix=='http://')
 					{
-						return false;
-					}else{
 						return true;
+					}else{
+						$prefix = substr($link,0,8);
+						
+						if ($prefix=='https://')
+							{
+								return true;
+							}else{
+								return false;
+							}
 					}
 				
 				
