@@ -5,10 +5,10 @@ class download_manager
 		public function __construct()
 			{
 				// Make sure the temp directory exists
-				if (!file_exists('./temp'))
+				if (!file_exists(TEMP_FOLDER))
 					{
 						// If not, make it
-						mkdir('./temp');
+						mkdir(TEMP_FOLDER);
 					}
 			}
 		
@@ -18,7 +18,7 @@ class download_manager
 					{
 						$current = file_get_contents($download);
 			
-						$file = "./temp/tempfile.tar.gz";
+						$file =  TEMP_FOLDER . "/tempfile";
 						file_put_contents($file, $current);
 						
 						return $file;

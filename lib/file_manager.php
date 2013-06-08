@@ -36,20 +36,79 @@ class file_manager
 			
 		public function unpack($file)
 			{
-				$file_uncompress = $this->uncompress($file);
+				$unpacked_file = '';
+				$uncompressed_file = '';
 				
-				// Delete compressed file
-				unlink($file);
+				if ($this->get_file_type($file)=='application/x-gzip')
+					{
+						$file = $this->rename_file($file,TEMP_FOLDER . '/tempfile.tar.gz');
+						
+						
+						// Uncompress this file
+						$uncompressed_file = $this->uncompress_gz($file);
+						
+						// Unpack the file
+						$unpacked_file = $this->untar($file_uncompress);
+						
+					}else if ($this->get_file_type($file)=='application/zip'){
+						
+						
+						$file = $this->rename_file($file,TEMP_FOLDER . '/tempfile.zip');
+						
+						$unpacked_file = $this->uncompress_zip($file);
+						
+					}else if ($this->get_file_type($file)=='application/x-bzip2'){
+						throw new Exception("Filetype currently not supported!");
+					}else{
+						throw new Exception("Filetype is not supported type.");
+					}
 				
-				$file_untar = $this->untar($file_uncompress);
 				
-				// Delete tar file
-				unlink($file_uncompress);
 				
-				return $file_untar;
+				
+				
+				
+				return $unpacked_file;
 			}
-			
-		private function uncompress($file)
+		
+		private function rename_file($file,$to)
+			{
+				
+				rename($file,$to);
+				return $to;
+			}
+		
+		private function get_file_type($name)
+			{
+				if (trim($name!=''))
+					{
+						$fileinfo = finfo_open(FILEINFO_MIME_TYPE);
+						$filetype = finfo_file($fileinfo, $name);
+						finfo_close($fileinfo);
+						
+						return $filetype;
+					}else{
+						throw new Exception("Name was blank in file type finder!");
+					}
+				
+			}
+		
+		private function uncompress_zip($file)
+			{
+				
+				$destination = './' . str_replace('.zip',"", $file);
+				$zip = new ZipArchive;
+				if ($zip->open($file) === TRUE) {
+					$zip->extractTo($destination);
+					$zip->close();
+					unlink($file);
+					return $destination;
+				} else {
+					throw new Exception("Unzip Failed!");
+				}
+			}
+		
+		private function uncompress_gz($file)
 			{
 				$sfp = gzopen("./" . $file, "rb");
 				$destination = "./" . str_replace(".gz","",$file);
@@ -61,7 +120,7 @@ class file_manager
 				}
 				gzclose($sfp);
 				fclose($fp);
-				
+				unlink($file);
 				return $destination;
 			}
 			
@@ -88,6 +147,8 @@ class file_manager
 								 
 								exec('tar xvf ' . $file . " -C ./temp/" . $just_folder);
 								
+								// Delete tar file
+								unlink($file);
 								return $destination;
 							}else{
 								echo "ERROR: " . $e->getMessage();
@@ -164,20 +225,20 @@ class file_manager
 		
 		public function clear_temp_directory()
 			{
-				$this->clear_directory('./temp');
+				$this->clear_directory(TEMP_FOLDER);
 			}
 			
 		public function is_temp_directory()
 			{
-				return $this->folder_exists('./temp');
+				return $this->folder_exists(TEMP_FOLDER);
 			}
 			
 		public function make_temp_directory()
 			{
-				if (!file_exists('./temp'))
+				if (!file_exists(TEMP_FOLDER))
 					{
 						// If not, make it
-						mkdir('./temp');
+						mkdir(TEMP_FOLDER);
 						
 					}else{
 						
