@@ -6,16 +6,16 @@ A script to simplify the process of installing PHP web applications.
 Configuration is available in the 'config.php' file.
 
 Instructions:
-	The app gives two textboxes, Download Link and Instance Name. 
-	Download link is the URL to the .tar.gz (the currently only supported 
-	format) file of the wep app you want to install. The Instance Name
-	is the name of this instance of the web app. When the button 'Go'
-	is clicked, the script will download the file, unpack and uncompress
-	the file, and move the files to a subfolder (based on the instance name)
-	in the 'test-apps' directory, create a database for the web app
-	(also based on the instance name) and then redirect you to a page
-	with the generated password, database name and database user where you
-	can complete the installation.
+	1. Get the download link of the PHP web application you would like to install. (It must be in .tar.gz or .zip formats) 
+ 
+	2. Place this link in the 'Download Link' textbox.
+
+	3. Give a the name to the instance of the web application you are installing, this will be used to generate the database, user, and password.
+	
+	4. Click the Go button, wait until the installation is complete and you are redirected to another page where you are given the database information so that you can complete the installation
+	
+	5. The app will be installed in the folder given by INSTALL_FOLDER in the config.php file
+
 
 NOTE: The database user for this app will need basically all privileges to be
 able to create the database and add the permissions.
@@ -27,4 +27,4 @@ contact me or fork the app.
 
 TODO:
 > Add capabilities to change where the app is to be installed (file browser, etc.)
-> Add support for ZIP files
+> Filtering for instance name, check for input that will be longer that the 16 char username limit for MYSQL, other illegal characters should be removed as well 

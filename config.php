@@ -5,10 +5,10 @@
 
 
 // Username for this application access to database, the user needs to bascially have all privileges
-define ('USERNAME','testapps');
+define ('USERNAME','PUT_DATABASE_USER_HERE');
 
 // Password for the above user
-define ('PASSWORD', 'quicksetup!');
+define ('PASSWORD', 'PUT_DATABASE_PASSWORD_HERE');
 
 
 
