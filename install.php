@@ -11,6 +11,17 @@ $location = $_SESSION['install_location']
 	<title>Complete the installation of <?php echo $_SESSION['name'];?></title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 1.22" />
+	<script src="./js/jquery.js" type="text/javascript" ></script>
+	<script>
+	
+	$(document).ready(function(){
+			$('#frame_display').load(function(){
+			
+			$("#url-current").val(document.getElementById('frame_display').contentWindow.location.href);
+		});
+		
+	});
+	</script>
 	<style>
 		html
 			{
@@ -64,7 +75,7 @@ $location = $_SESSION['install_location']
 			{
 				margin-top:90px;
 				width:100%;
-				height:90%;
+				
 				min-height: 800px;
 				border:0px solid white;
 			}
@@ -73,24 +84,60 @@ $location = $_SESSION['install_location']
 			{
 				font-family:Courier New;
 			}
+		
+	#menu
+		{
+			float:left;
+			position:absolute;
+			bottom:0;
+			padding:15px;
+		}
+		
+	#menu button
+		{
+			display:block;
+			height:25px;
+			float:left;
+		}
+	
+	#menu #url-current
+		{
+			width:500px;
+			float:left;
+			background-color:white;
+		}
 	</style>
 </head>
 
 <body>
+
 	<div id="info">
-	<ul>
-		<li><strong>Database Name:</strong> <span class="value"><?php echo $_SESSION['database_info']['database'];?></span></li>
-		<li><strong>Database Username:</strong> <span class="value"><?php echo $_SESSION['database_info']['user'];?></span></li>
-		<li><strong>Database Password:</strong> <span class="value"><?php echo $_SESSION['database_info']['password'];?></span></li>
-		<li></li>
-	</ul>
-	<div id="go"><a href="<?php echo $location;?>">Go to Site (Don't forget your database info!)</a>
-	<br><a href="#" onclick="document.getElementById('frame_display').contentWindow.location.reload(true);">Reload Frame</a> (Use this instead of the browser's reload)</div>
+		<div id="menu">
+		
+			<input type="text" disabled="disabled" value="" id="url-current">
+			<button onclick="document.getElementById('frame_display').contentWindow.history.go(-1);">Back</button>
+		</div>
+		<ul>
+			<li><strong>Database Name:</strong> <span class="value"><?php echo $_SESSION['database_info']['database'];?></span></li>
+			<li><strong>Database Username:</strong> <span class="value"><?php echo $_SESSION['database_info']['user'];?></span></li>
+			<li><strong>Database Password:</strong> <span class="value"><?php echo $_SESSION['database_info']['password'];?></span></li>
+			<li></li>
+		</ul>
+		
+		<div id="go">
+			
+			<a href="<?php echo $location;?>">Go to Site (Don't forget your database info!)</a>
+			<br><a href="#" onclick="document.getElementById('frame_display').contentWindow.location.reload(true);">Reload Frame</a> (Use this instead of the browser's reload)
+			
+		</div>	
 	</div>
-	
+
 	<iframe src="<?php echo $location?>" id="frame_display">
 	
 	</iframe>
+	<script>
+	
+	</script>
 </body>
 
 </html>
