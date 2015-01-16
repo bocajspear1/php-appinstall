@@ -48,7 +48,7 @@ class file_manager
 						$uncompressed_file = $this->uncompress_gz($file);
 						
 						// Unpack the file
-						$unpacked_file = $this->untar($file_uncompress);
+						$unpacked_file = $this->untar($uncompressed_file);
 						
 					}else if ($this->get_file_type($file)=='application/zip'){
 						
